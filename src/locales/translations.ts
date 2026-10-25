@@ -1,0 +1,143 @@
+import type { Language } from "../types";
+
+export const translations: Record<string, string> = {
+    "Home": "হোম",
+    "Features": "ফিচারসমূহ",
+    "Why NexaBiz": "কেন NexaBiz",
+    "Pricing": "মূল্য তালিকা",
+    "Log in": "লগইন",
+    "Get Started": "শুরু করুন",
+    "Get Started Today": "আজই শুরু করুন",
+    "One platform. Your entire business.": "একটি প্ল্যাটফর্মে আপনার সম্পূর্ণ ব্যবসা",
+    "Run your business smarter, grow it faster.": "বুদ্ধিমত্তার সঙ্গে ব্যবসা পরিচালনা করুন, দ্রুত উন্নতি করুন।",
+    "Simplify your business operations with one powerful platform for sales, inventory, employees and multiple branches. Spend less time managing and more time growing.":
+        "বিক্রয়, ইনভেন্টরি, কর্মচারী এবং একাধিক শাখা একটি শক্তিশালী প্ল্যাটফর্মে পরিচালনা করুন। ব্যবস্থাপনায় কম সময় দিয়ে ব্যবসার উন্নয়নে বেশি মনোযোগ দিন।",
+    "Create Your Account": "আপনার অ্যাকাউন্ট তৈরি করুন",
+    "Explore Features": "ফিচারগুলো দেখুন",
+    "Easy to get started": "সহজেই শুরু করা যায়",
+    "Built to scale": "ব্যবসার বৃদ্ধির উপযোগী",
+    "Business Overview": "ব্যবসার সারসংক্ষেপ",
+    "Your operations at a glance": "এক নজরে আপনার ব্যবসার কার্যক্রম",
+    "Dashboard": "ড্যাশবোর্ড",
+    "Businesses": "ব্যবসা প্রতিষ্ঠান",
+    "Branches": "শাখা",
+    "Team Members": "টিমের সদস্য",
+    "Products": "পণ্য",
+    "Everything connected": "সবকিছু একই প্ল্যাটফর্মে",
+    "Sales, stock and teams in one place.": "বিক্রয়, স্টক ও টিম—সব এক জায়গায়।",
+    "Centralized management": "কেন্দ্রীয় ব্যবস্থাপনা",
+    "One place for your operations": "আপনার সব কার্যক্রমের জন্য একটি জায়গা",
+    "Everything you need to manage a modern business": "আধুনিক ব্যবসা পরিচালনার জন্য প্রয়োজনীয় সবকিছু",
+    "Business": "ব্যবসা",
+    "Sales": "বিক্রয়",
+    "Inventory": "ইনভেন্টরি",
+    "Team": "টিম",
+    "Powerful Features": "শক্তিশালী ফিচারসমূহ",
+    "Everything your business needs": "আপনার ব্যবসার প্রয়োজনীয় সবকিছু",
+    "Bring your essential business operations together with tools designed to make your everyday work simpler.":
+        "দৈনন্দিন কাজ সহজ করার জন্য প্রয়োজনীয় ব্যবসায়িক কার্যক্রমগুলো এক প্ল্যাটফর্মে পরিচালনা করুন।",
+    "Business Management": "ব্যবসা ব্যবস্থাপনা",
+    "Manage your businesses, branches, employees and daily operations from one central platform.":
+        "একটি কেন্দ্রীয় প্ল্যাটফর্ম থেকে আপনার ব্যবসা, শাখা, কর্মচারী এবং দৈনন্দিন কার্যক্রম পরিচালনা করুন।",
+    "Sales & Inventory": "বিক্রয় ও ইনভেন্টরি",
+    "Track stock, manage sales and purchases, and keep your product information organized.":
+        "স্টক পর্যবেক্ষণ করুন, বিক্রয় ও ক্রয় পরিচালনা করুন এবং পণ্যের তথ্য সুশৃঙ্খল রাখুন।",
+    "Reports & Analytics": "রিপোর্ট ও বিশ্লেষণ",
+    "Turn business data into useful insights and make smarter decisions with clear reports.":
+        "ব্যবসার তথ্য থেকে কার্যকর ধারণা নিন এবং স্পষ্ট রিপোর্টের মাধ্যমে ভালো সিদ্ধান্ত নিন।",
+    "Team Management": "টিম ব্যবস্থাপনা",
+    "Organize your team with role-based access and manage employee responsibilities.":
+        "ভূমিকা অনুযায়ী প্রবেশাধিকার নির্ধারণ করুন এবং কর্মচারীদের দায়িত্ব পরিচালনা করুন।",
+    "Secure Access": "নিরাপদ প্রবেশাধিকার",
+    "Keep business operations organized with authentication and permission-based access.":
+        "অথেনটিকেশন ও অনুমতিভিত্তিক প্রবেশাধিকার দিয়ে ব্যবসার কার্যক্রম সুশৃঙ্খল রাখুন।",
+    "Multi-Branch Support": "একাধিক শাখার সুবিধা",
+    "Manage multiple branches and keep your business operations connected as you grow.":
+        "একাধিক শাখা পরিচালনা করুন এবং ব্যবসা বড় হওয়ার সঙ্গে সব কার্যক্রম সংযুক্ত রাখুন।",
+    "Built for your workflow": "আপনার কাজের উপযোগী",
+    "Made for growing businesses": "বর্ধনশীল ব্যবসার জন্য তৈরি",
+    "Less complexity.": "কম জটিলতা।",
+    "More control.": "আরও বেশি নিয়ন্ত্রণ।",
+    "Stop switching between disconnected tools. NexaBiz brings your business information into one organized workspace so you can manage daily work with greater clarity.":
+        "বিচ্ছিন্ন বিভিন্ন টুলের মধ্যে বারবার পরিবর্তন করা বন্ধ করুন। NexaBiz আপনার ব্যবসার তথ্য একটি সুশৃঙ্খল কর্মক্ষেত্রে একত্র করে, যাতে দৈনন্দিন কাজ সহজে পরিচালনা করতে পারেন।",
+    "Manage multiple businesses in one place": "এক জায়গায় একাধিক ব্যবসা পরিচালনা করুন",
+    "Organize products, sales and purchases": "পণ্য, বিক্রয় ও ক্রয় সুশৃঙ্খল রাখুন",
+    "Monitor branches and employees": "শাখা ও কর্মচারীদের কার্যক্রম পর্যবেক্ষণ করুন",
+    "Access reports from a central dashboard": "কেন্দ্রীয় ড্যাশবোর্ড থেকে রিপোর্ট দেখুন",
+    "Start Managing Your Business": "আপনার ব্যবসা পরিচালনা শুরু করুন",
+    "One workspace.": "একটি কর্মক্ষেত্র।",
+    "Countless possibilities.": "অসংখ্য সম্ভাবনা।",
+    "Start with the essentials and build a business management workflow that fits the way you work.":
+        "প্রয়োজনীয় ফিচার দিয়ে শুরু করুন এবং আপনার কাজের ধরন অনুযায়ী ব্যবসা ব্যবস্থাপনার পদ্ধতি তৈরি করুন।",
+    "Business and branch organization": "ব্যবসা ও শাখা ব্যবস্থাপনা",
+    "Product and inventory management": "পণ্য ও ইনভেন্টরি ব্যবস্থাপনা",
+    "Team access and permissions": "টিমের প্রবেশাধিকার ও অনুমতি",
+    "Simple to get started": "সহজে শুরু করুন",
+    "A better way to manage your business": "ব্যবসা পরিচালনার আরও ভালো উপায়",
+    "Create your account and explore the platform. Choose a suitable plan as your business needs grow.":
+        "অ্যাকাউন্ট তৈরি করে প্ল্যাটফর্মটি ব্যবহার শুরু করুন। ব্যবসার প্রয়োজন অনুযায়ী উপযুক্ত প্ল্যান বেছে নিন।",
+    "GET STARTED": "শুরু করুন",
+    "Your business workspace": "আপনার ব্যবসার কর্মক্ষেত্র",
+    "Register to begin setting up your business management account.":
+        "ব্যবসা ব্যবস্থাপনার অ্যাকাউন্ট তৈরি করতে নিবন্ধন করুন।",
+    "Business profile setup": "ব্যবসার প্রোফাইল তৈরি",
+    "Organized management dashboard": "সুশৃঙ্খল ব্যবস্থাপনা ড্যাশবোর্ড",
+    "Product and branch management tools": "পণ্য ও শাখা ব্যবস্থাপনার টুল",
+    "Access to available platform features": "প্ল্যাটফর্মের উপলভ্য ফিচার ব্যবহার",
+    "Available plans and pricing can be configured for your business model.":
+        "আপনার ব্যবসার ধরন অনুযায়ী প্ল্যান ও মূল্য নির্ধারণ করা যাবে।",
+    "Ready to simplify your business?": "আপনার ব্যবসা সহজ করতে প্রস্তুত?",
+    "Bring your operations together and take the next step toward more organized business management.":
+        "আপনার ব্যবসার কার্যক্রম একত্র করুন এবং আরও সুশৃঙ্খল ব্যবস্থাপনার দিকে এগিয়ে যান।",
+    "Business management, made simpler.": "ব্যবসা ব্যবস্থাপনা এখন আরও সহজ।",
+    "All rights reserved.": "সর্বস্বত্ব সংরক্ষিত।",
+    "Back to home": "হোমে ফিরে যান",
+    "Everything your business needs, in one place.": "আপনার ব্যবসার প্রয়োজনীয় সবকিছু, এক জায়গায়।",
+    "Organize your business operations, connect your branches and keep your team working toward the same goals.":
+        "ব্যবসার কার্যক্রম সুশৃঙ্খল রাখুন, শাখাগুলো সংযুক্ত করুন এবং টিমকে একই লক্ষ্যে কাজ করতে সাহায্য করুন।",
+    "Built for business management": "ব্যবসা ব্যবস্থাপনার জন্য তৈরি",
+    "One organized workspace for your daily business operations.":
+        "আপনার দৈনন্দিন ব্যবসায়িক কার্যক্রমের জন্য একটি সুশৃঙ্খল কর্মক্ষেত্র।",
+    "Create your account": "অ্যাকাউন্ট তৈরি করুন",
+    "Welcome back": "আবারও স্বাগতম",
+    "Set up your account to get started with NexaBiz.": "NexaBiz ব্যবহার শুরু করতে আপনার অ্যাকাউন্ট তৈরি করুন।",
+    "Enter your details to access your business workspace.": "আপনার ব্যবসার কর্মক্ষেত্রে প্রবেশ করতে তথ্য দিন।",
+    "Register": "নিবন্ধন",
+    "Full name": "সম্পূর্ণ নাম",
+    "Enter your full name": "আপনার সম্পূর্ণ নাম লিখুন",
+    "Email address": "ইমেইল ঠিকানা",
+    "Password": "পাসওয়ার্ড",
+    "Forgot password?": "পাসওয়ার্ড ভুলে গেছেন?",
+    "Enter your password": "আপনার পাসওয়ার্ড লিখুন",
+    "Use at least 8 characters.": "কমপক্ষে ৮টি অক্ষর ব্যবহার করুন।",
+    "Confirm password": "পাসওয়ার্ড নিশ্চিত করুন",
+    "Re-enter your password": "পাসওয়ার্ড আবার লিখুন",
+    "Remember me": "আমাকে মনে রাখুন",
+    "Create Account": "অ্যাকাউন্ট তৈরি করুন",
+    "Log In to Your Account": "আপনার অ্যাকাউন্টে লগইন করুন",
+    "Already have an account?": "আগে থেকেই অ্যাকাউন্ট আছে?",
+    "Don't have an account?": "অ্যাকাউন্ট নেই?",
+    "Create account": "অ্যাকাউন্ট তৈরি করুন",
+    "Secure business workspace": "নিরাপদ ব্যবসায়িক কর্মক্ষেত্র",
+    "Passwords do not match.": "পাসওয়ার্ড দুটি মেলেনি।",
+    "Password must be at least 8 characters.": "পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।",
+    "Show password": "পাসওয়ার্ড দেখুন",
+    "Hide password": "পাসওয়ার্ড লুকান",
+    "Hide confirm password": "নিশ্চিতকরণ পাসওয়ার্ড লুকান",
+    "Select Language": "ভাষা নির্বাচন করুন",
+    "Registration form validated. Connect the Laravel registration API to create your account.":
+        "নিবন্ধন ফর্ম যাচাই করা হয়েছে। অ্যাকাউন্ট তৈরি করতে Laravel registration API সংযুক্ত করতে হবে।",
+    "Login form validated. Remember me is enabled. Connect the Laravel login API to continue.":
+        "লগইন ফর্ম যাচাই করা হয়েছে। আমাকে মনে রাখুন চালু আছে। এগিয়ে যেতে Laravel login API সংযুক্ত করতে হবে।",
+    "Login form validated. Connect the Laravel login API to continue.":
+        "লগইন ফর্ম যাচাই করা হয়েছে। এগিয়ে যেতে Laravel login API সংযুক্ত করতে হবে।",
+    "Connect your Laravel password reset endpoint to implement password recovery.":
+        "পাসওয়ার্ড পুনরুদ্ধারের জন্য Laravel password reset endpoint সংযুক্ত করতে হবে।",
+};
+
+
+export function translate(text: string, language: Language): string {
+    if (language === "en") return text;
+    return translations[text] ?? text;
+}
+
