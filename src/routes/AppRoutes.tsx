@@ -1,5 +1,13 @@
+
 import { useState } from "react";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import {
+    Navigate,
+    Route,
+    Routes,
+    useNavigate,
+    useParams
+} from "react-router-dom";
+import type { ReactNode } from "react";
 import type { Language, Page } from "../types";
 import LandingPage from "../pages/LandingPage";
 import LoginPage from "../pages/LoginPage";
@@ -7,19 +15,64 @@ import RegisterPage from "../pages/RegisterPage";
 import DashboardPage from "../pages/DashboardPage";
 import BusinessDashboardPage from "../pages/BusinessDashboardPage";
 import OnlineStorePage from "../pages/OnlineStorePage";
+import BusinessRoutes from "../modules/business/routes";
+import {
+    businessDashboardPath,
+    validBusinessSlug
+} from "../modules/business/businessRoutes";
 
-
-function hasAuthToken() {
+function hasAuthToken(): boolean {
     return Boolean(
         localStorage.getItem("access_token") ||
-        sessionStorage.getItem("access_token"),
+        sessionStorage.getItem("access_token")
+    );
+}
+
+function ProtectedRoute({ children }: { children: ReactNode }) {
+    if (!hasAuthToken()) {
+        return <Navigate to="/login" replace />;
+    }
+
+    return <>{children}</>;
+}
+
+function BusinessDashboardRoute({
+    language,
+    onLanguageChange
+}: {
+    language: Language;
+    onLanguageChange: (language: Language) => void;
+}) {
+    const navigate = useNavigate();
+    const { businessSlug } = useParams<{ businessSlug: string }>();
+
+    if (!businessSlug || !validBusinessSlug(businessSlug)) {
+        return <Navigate to="/dashboard" replace />;
+    }
+
+    const storedSlug = localStorage.getItem("selected_business_slug");
+
+    // Avoid showing a previously selected business under another URL.
+    if (storedSlug && storedSlug !== businessSlug) {
+        return <Navigate to="/dashboard" replace />;
+    }
+
+    return (
+        <BusinessDashboardPage
+            onBack={() => navigate("/dashboard")}
+            language={language}
+            onLanguageChange={onLanguageChange}
+        />
     );
 }
 
 export default function AppRoutes() {
     const navigate = useNavigate();
+
     const [language, setLanguage] = useState<Language>(() =>
-        localStorage.getItem("nexabiz-language") === "bn" ? "bn" : "en",
+        localStorage.getItem("nexabiz-language") === "bn"
+            ? "bn"
+            : "en"
     );
 
     const changeLanguage = (nextLanguage: Language) => {
@@ -28,58 +81,117 @@ export default function AppRoutes() {
     };
 
     const goToPage = (page: Page) => {
+        const selectedBusinessSlug =
+            localStorage.getItem("selected_business_slug");
+
         const routes: Record<Page, string> = {
             home: "/",
             login: "/login",
             register: "/register",
             dashboard: "/dashboard",
-            "business-dashboard": "/business-dashboard",
+            "business-dashboard":
+                selectedBusinessSlug &&
+                validBusinessSlug(selectedBusinessSlug)
+                    ? businessDashboardPath(selectedBusinessSlug)
+                    : "/dashboard"
         };
+
         navigate(routes[page]);
-        window.scrollTo({ top: 0, behavior: "instant" });
+
+        window.scrollTo({
+            top: 0,
+            behavior: "instant"
+        });
     };
 
     const pageProps = {
         navigate: goToPage,
         language,
-        onLanguageChange: changeLanguage,
+        onLanguageChange: changeLanguage
     };
 
     return (
         <Routes>
-            <Route path="/" element={<LandingPage {...pageProps} />} />
-            <Route path="/login" element={<LoginPage {...pageProps} />} />
-            <Route path="/register" element={<RegisterPage {...pageProps} />} />
+            {/* Public Routes */}
             <Route
-                path="/dashboard"
-                element={hasAuthToken() ? <DashboardPage {...pageProps} /> : <Navigate to="/login" replace />}
+                path="/"
+                element={<LandingPage {...pageProps} />}
             />
             <Route
-                path="*"
-                element={<Navigate to={hasAuthToken() ? "/dashboard" : "/"} replace />}
+                path="/login"
+                element={<LoginPage {...pageProps} />}
+            />
+            <Route
+                path="/register"
+                element={<RegisterPage {...pageProps} />}
             />
 
+            {/* Main Dashboard */}
             <Route
-                path="/business-dashboard"
+                path="/dashboard"
                 element={
-                    <BusinessDashboardPage
-                        onBack={() => goToPage("dashboard")}
-                        language={language}
-                        onLanguageChange={setLanguage}
-                    />
+                    <ProtectedRoute>
+                        <DashboardPage {...pageProps} />
+                    </ProtectedRoute>
                 }
             />
 
+            {/* Business Dashboard with Business Slug */}
+            <Route
+                path="/b/:businessSlug/dashboard"
+                element={
+                    <ProtectedRoute>
+                        <BusinessDashboardRoute
+                            language={language}
+                            onLanguageChange={changeLanguage}
+                        />
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* Legacy Business Dashboard Redirect */}
+            <Route
+                path="/business-dashboard"
+                element={
+                    <ProtectedRoute>
+                        <LegacyBusinessDashboardRedirect />
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* Business Module / Menu / Child Menu Routes */}
+            {BusinessRoutes({ language })}
+
+            {/* Online Store */}
             <Route
                 path="/online-stores"
                 element={
-                    hasAuthToken() ? (
+                    <ProtectedRoute>
                         <OnlineStorePage />
-                    ) : (
-                        <Navigate to="/login" replace />
-                    )
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* Unknown Route */}
+            <Route
+                path="*"
+                element={
+                    <Navigate
+                        to={hasAuthToken() ? "/dashboard" : "/"}
+                        replace
+                    />
                 }
             />
         </Routes>
     );
+}
+
+function LegacyBusinessDashboardRedirect() {
+    const slug = localStorage.getItem("selected_business_slug");
+
+    if (!slug || !validBusinessSlug(slug)) {
+        return <Navigate to="/dashboard" replace />;
+    }
+
+    return <Navigate to={businessDashboardPath(slug)} replace />;
 }

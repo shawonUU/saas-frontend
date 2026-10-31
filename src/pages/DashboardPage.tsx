@@ -380,11 +380,44 @@ export default function DashboardPage({
         }
     };
 
+
     const openBusinessDashboard = (business: Business) => {
-        localStorage.setItem("selected_business_id", String(business.id));
-        setSelectedBusinessId(business.id);
+        if ((business.status ?? "Active").toLowerCase() !== "active") {
+            setError(t("This business is inactive.", "এই ব্যবসাটি নিষ্ক্রিয়।"));
+            return;
+        }
+
+        const businessId = Number(business.id);
+        const businessSlug = business.slug?.trim();
+
+        if (!Number.isSafeInteger(businessId) || businessId <= 0) {
+            setError(t("Invalid business ID.", "ব্যবসার আইডি সঠিক নয়।"));
+            return;
+        }
+
+        if (!businessSlug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(businessSlug)) {
+            setError(t(
+                "This business does not have a valid slug.",
+                "এই ব্যবসার সঠিক Slug পাওয়া যায়নি।"
+            ));
+            return;
+        }
+
+        localStorage.setItem("selected_business_id", String(businessId));
+        localStorage.setItem("selected_business_slug", businessSlug);
+
+        setSelectedBusinessId(businessId);
+        setError("");
+
+        window.history.replaceState(
+            { ...window.history.state },
+            "",
+            window.location.pathname
+        );
+
         navigate("business-dashboard");
     };
+
 
     const handleLogout = async () => {
         setLoggingOut(true);
