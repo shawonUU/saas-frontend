@@ -18,7 +18,7 @@ import { translate } from "../locales/translations";
 import Brand from "../components/Brand";
 import Button from "../components/Button";
 import LanguageSwitcher from "../components/LanguageSwitcher";
-import api from "../api/axios";
+import api, { TOKEN_KEY, USER_KEY } from "../api/axios";
 
 interface AuthFormProps {
     mode: "login" | "register";
@@ -124,23 +124,23 @@ export default function AuthForm({
                 );
             }
 
-            // Remove any previous authentication data.
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("user");
+            // Clear previous authentication data for current tenant.
+            localStorage.removeItem(TOKEN_KEY);
+            localStorage.removeItem(USER_KEY);
 
-            sessionStorage.removeItem("access_token");
-            sessionStorage.removeItem("user");
+            sessionStorage.removeItem(TOKEN_KEY);
+            sessionStorage.removeItem(USER_KEY);
 
             // Save authentication data based on Remember me.
             const storage = remember
                 ? localStorage
                 : sessionStorage;
 
-            storage.setItem("access_token", data.token);
+            storage.setItem(TOKEN_KEY, data.token);
 
             if (data.user) {
                 storage.setItem(
-                    "user",
+                    USER_KEY,
                     JSON.stringify(data.user),
                 );
             }
@@ -557,9 +557,7 @@ export default function AuthForm({
                             )}
 
                             <Button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full !py-3.5"
+                                type="submit" disabled={loading} className="w-full !py-3.5"
                             >
                                 {text(
                                     loading
