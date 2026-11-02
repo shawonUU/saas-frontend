@@ -13,18 +13,22 @@ import {
     Users,
 } from "lucide-react";
 
-import type { Language, Page } from "../types";
-import { translate } from "../locales/translations";
-import Brand from "../components/Brand";
-import Button from "../components/Button";
-import LanguageSwitcher from "../components/LanguageSwitcher";
-import api, { TOKEN_KEY, USER_KEY } from "../api/axios";
+import type { Language, Page } from "../../types";
+import { translate } from "../../locales/translations";
+import Brand from "../Brand";
+import Button from "../Button";
+import LanguageSwitcher from "../LanguageSwitcher";
+import api, { TOKEN_KEY, USER_KEY } from "../../api/axios";
 
 interface AuthFormProps {
     mode: "login" | "register";
     navigate: (page: Page) => void;
     language: Language;
     onLanguageChange: (language: Language) => void;
+    title?: string;
+    description?: string;
+    loginEndpoint?: string;
+    redirectPage?: Page;
 }
 
 interface AuthResponse {

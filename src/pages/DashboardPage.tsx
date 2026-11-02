@@ -298,7 +298,7 @@ export default function DashboardPage({
                     return withBranchCounts[0]?.id ?? null;
                 });
 
-                if (withBranchCounts.length === 0) setShowCreateModal(true);
+                // if (withBranchCounts.length === 0) setShowCreateModal(true);
             } catch (requestError: any) {
                 setError(
                     getErrorMessage(
@@ -443,7 +443,7 @@ export default function DashboardPage({
             window.location.pathname
         );
 
-        window.location.assign(`${window.location.protocol}//admin.${businessSlug}.${import.meta.env.VITE_SAAS_DOMAIN || "localtest.me"}:${window.location.port || "5173"}/login`);
+        window.location.assign(`${window.location.protocol}//admin.${businessSlug}.${import.meta.env.VITE_SAAS_DOMAIN || "localtest.me"}:${window.location.port || "5173"}`);
     };
 
 

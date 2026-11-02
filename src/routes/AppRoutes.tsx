@@ -1,4 +1,3 @@
-import { TOKEN_KEY, appMode } from "../api/axios";
 
 import { useState } from "react";
 import {
@@ -9,20 +8,28 @@ import {
     useParams
 } from "react-router-dom";
 import type { ReactNode } from "react";
+
+import { TOKEN_KEY, appMode } from "../api/axios";
 import type { Language, Page } from "../types";
+
 import LandingPage from "../pages/LandingPage";
 import LoginPage from "../pages/LoginPage";
+import ShopAdminLoginPage from "../pages/ShopAdminLoginPage";
+import CustomerLoginPage from "../pages/CustomerLoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import DashboardPage from "../pages/DashboardPage";
 import BusinessDashboardPage from "../pages/BusinessDashboardPage";
 import OnlineStorePage from "../pages/OnlineStorePage";
 import StorefrontHome from "../pages/StorefrontHome";
 import ShopAdminHome from "../pages/ShopAdminHome";
+
 import BusinessRoutes from "../modules/business/routes";
+
 import {
     businessDashboardPath,
     validBusinessSlug
 } from "../modules/business/businessRoutes";
+
 
 function hasAuthToken(): boolean {
     return Boolean(
@@ -30,6 +37,7 @@ function hasAuthToken(): boolean {
         sessionStorage.getItem(TOKEN_KEY)
     );
 }
+
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
     if (!hasAuthToken()) {
@@ -39,6 +47,7 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
     return <>{children}</>;
 }
 
+
 function BusinessDashboardRoute({
     language,
     onLanguageChange
@@ -47,7 +56,10 @@ function BusinessDashboardRoute({
     onLanguageChange: (language: Language) => void;
 }) {
     const navigate = useNavigate();
-    const { businessSlug } = useParams<{ businessSlug: string }>();
+
+    const { businessSlug } = useParams<{
+        businessSlug: string;
+    }>();
 
     if (!businessSlug || !validBusinessSlug(businessSlug)) {
         return <Navigate to="/dashboard" replace />;
@@ -69,6 +81,7 @@ function BusinessDashboardRoute({
     );
 }
 
+
 export default function AppRoutes() {
     const navigate = useNavigate();
 
@@ -78,10 +91,16 @@ export default function AppRoutes() {
             : "en"
     );
 
+
     const changeLanguage = (nextLanguage: Language) => {
         setLanguage(nextLanguage);
-        localStorage.setItem("nexabiz-language", nextLanguage);
+
+        localStorage.setItem(
+            "nexabiz-language",
+            nextLanguage
+        );
     };
+
 
     const goToPage = (page: Page) => {
         const selectedBusinessSlug =
@@ -92,6 +111,7 @@ export default function AppRoutes() {
             login: "/login",
             register: "/register",
             dashboard: "/dashboard",
+
             "business-dashboard":
                 selectedBusinessSlug &&
                 validBusinessSlug(selectedBusinessSlug)
@@ -107,38 +127,120 @@ export default function AppRoutes() {
         });
     };
 
+
     const pageProps = {
         navigate: goToPage,
         language,
         onLanguageChange: changeLanguage
     };
 
+
+    // Business Admin and Storefront Application Routes
     if (appMode !== "main") {
-        return <Routes>
-            <Route path="/login" element={<LoginPage {...pageProps} />} />
-            <Route path="/register" element={appMode === "storefront" ? <RegisterPage {...pageProps} /> : <Navigate to="/login" replace />} />
-            <Route path="/" element={appMode === "storefront" ? <StorefrontHome language={language} /> : <Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<ProtectedRoute>{appMode === "business_admin" ? <ShopAdminHome language={language} /> : <div className="min-h-screen bg-slate-50 p-8"><h1 className="text-xl font-bold">{language === "bn" ? "আমার অ্যাকাউন্ট" : "My Account"}</h1></div>}</ProtectedRoute>} />
-            <Route path="*" element={<Navigate to={hasAuthToken() ? "/dashboard" : "/login"} replace />} />
-        </Routes>;
+
+        const LoginComponent =
+            appMode === "business_admin"
+                ? ShopAdminLoginPage
+                : CustomerLoginPage;
+
+        return (
+            <Routes>
+
+                {/* Mode Specific Login */}
+                <Route
+                    path="/login"
+                    element={<LoginComponent {...pageProps} />}
+                />
+
+
+                {/* Storefront Registration */}
+                <Route
+                    path="/register"
+                    element={
+                        appMode === "storefront"
+                            ? <RegisterPage {...pageProps} />
+                            : <Navigate to="/login" replace />
+                    }
+                />
+
+
+                {/* Storefront Home */}
+                <Route
+                    path="/"
+                    element={
+                        appMode === "storefront"
+                            ? <StorefrontHome language={language} />
+                            : <Navigate to="/dashboard" replace />
+                    }
+                />
+
+
+                {/* Mode Specific Dashboard */}
+                <Route
+                    path="/dashboard"
+                    element={
+                        <ProtectedRoute>
+                            {appMode === "business_admin" ? (
+                                <ShopAdminHome
+                                    language={language}
+                                />
+                            ) : (
+                                <div className="min-h-screen bg-slate-50 p-8">
+                                    <h1 className="text-xl font-bold">
+                                        {language === "bn"
+                                            ? "আমার অ্যাকাউন্ট"
+                                            : "My Account"}
+                                    </h1>
+                                </div>
+                            )}
+                        </ProtectedRoute>
+                    }
+                />
+
+
+                {/* Unknown Route */}
+                <Route
+                    path="*"
+                    element={
+                        <Navigate
+                            to={
+                                hasAuthToken()
+                                    ? "/dashboard"
+                                    : "/login"
+                            }
+                            replace
+                        />
+                    }
+                />
+
+            </Routes>
+        );
     }
+
+
+    // Main SaaS Application Routes
     return (
         <Routes>
+
             {/* Public Routes */}
             <Route
                 path="/"
                 element={<LandingPage {...pageProps} />}
             />
+
+            {/* SaaS Owner Login */}
             <Route
                 path="/login"
                 element={<LoginPage {...pageProps} />}
             />
+
             <Route
                 path="/register"
                 element={<RegisterPage {...pageProps} />}
             />
 
-            {/* Main Dashboard */}
+
+            {/* Main SaaS Dashboard */}
             <Route
                 path="/dashboard"
                 element={
@@ -147,6 +249,7 @@ export default function AppRoutes() {
                     </ProtectedRoute>
                 }
             />
+
 
             {/* Business Dashboard with Business Slug */}
             <Route
@@ -161,6 +264,7 @@ export default function AppRoutes() {
                 }
             />
 
+
             {/* Legacy Business Dashboard Redirect */}
             <Route
                 path="/business-dashboard"
@@ -171,8 +275,10 @@ export default function AppRoutes() {
                 }
             />
 
+
             {/* Business Module / Menu / Child Menu Routes */}
             {BusinessRoutes({ language })}
+
 
             {/* Online Store */}
             <Route
@@ -184,6 +290,7 @@ export default function AppRoutes() {
                 }
             />
 
+
             {/* Unknown Route */}
             <Route
                 path="*"
@@ -194,9 +301,11 @@ export default function AppRoutes() {
                     />
                 }
             />
+
         </Routes>
     );
 }
+
 
 function LegacyBusinessDashboardRedirect() {
     const slug = localStorage.getItem("selected_business_slug");
@@ -205,5 +314,10 @@ function LegacyBusinessDashboardRedirect() {
         return <Navigate to="/dashboard" replace />;
     }
 
-    return <Navigate to={businessDashboardPath(slug)} replace />;
+    return (
+        <Navigate
+            to={businessDashboardPath(slug)}
+            replace
+        />
+    );
 }

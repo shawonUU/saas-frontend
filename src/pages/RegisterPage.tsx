@@ -1,4 +1,4 @@
-import AuthForm from "./AuthForm";
+import AuthForm from "../components/auth/AuthForm";
 import type { Language, Page } from "../types";
 
 type Props = { navigate: (page: Page) => void; language: Language; onLanguageChange: (language: Language) => void };
