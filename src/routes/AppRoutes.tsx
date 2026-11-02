@@ -1,3 +1,4 @@
+import { TOKEN_KEY, appMode } from "../api/axios";
 
 import { useState } from "react";
 import {
@@ -15,6 +16,8 @@ import RegisterPage from "../pages/RegisterPage";
 import DashboardPage from "../pages/DashboardPage";
 import BusinessDashboardPage from "../pages/BusinessDashboardPage";
 import OnlineStorePage from "../pages/OnlineStorePage";
+import StorefrontHome from "../pages/StorefrontHome";
+import ShopAdminHome from "../pages/ShopAdminHome";
 import BusinessRoutes from "../modules/business/routes";
 import {
     businessDashboardPath,
@@ -23,8 +26,8 @@ import {
 
 function hasAuthToken(): boolean {
     return Boolean(
-        localStorage.getItem("access_token") ||
-        sessionStorage.getItem("access_token")
+        localStorage.getItem(TOKEN_KEY) ||
+        sessionStorage.getItem(TOKEN_KEY)
     );
 }
 
@@ -110,6 +113,15 @@ export default function AppRoutes() {
         onLanguageChange: changeLanguage
     };
 
+    if (appMode !== "main") {
+        return <Routes>
+            <Route path="/login" element={<LoginPage {...pageProps} />} />
+            <Route path="/register" element={appMode === "storefront" ? <RegisterPage {...pageProps} /> : <Navigate to="/login" replace />} />
+            <Route path="/" element={appMode === "storefront" ? <StorefrontHome language={language} /> : <Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<ProtectedRoute>{appMode === "business_admin" ? <ShopAdminHome language={language} /> : <div className="min-h-screen bg-slate-50 p-8"><h1 className="text-xl font-bold">{language === "bn" ? "আমার অ্যাকাউন্ট" : "My Account"}</h1></div>}</ProtectedRoute>} />
+            <Route path="*" element={<Navigate to={hasAuthToken() ? "/dashboard" : "/login"} replace />} />
+        </Routes>;
+    }
     return (
         <Routes>
             {/* Public Routes */}

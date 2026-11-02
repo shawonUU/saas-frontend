@@ -1,3 +1,4 @@
+import { TOKEN_KEY, USER_KEY } from "../api/axios";
 import {
     useCallback,
     useEffect,
@@ -44,6 +45,7 @@ type DashboardUser = {
 type BusinessCategory = {
     id: number;
     name: string;
+    name_bn?: string;
     slug: string;
     is_active: boolean;
 };
@@ -83,6 +85,8 @@ type DashboardPageProps = {
 };
 
 type BusinessForm = {
+    admin_password: string;
+    slug: string;
     name: string;
     category_id: string;
     country: string;
@@ -96,6 +100,8 @@ const inputClass =
     "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500";
 
 const initialBusinessForm: BusinessForm = {
+    admin_password: "",
+    slug: "",
     name: "",
     category_id: "",
     country: "Bangladesh",
@@ -184,6 +190,22 @@ export default function DashboardPage({
     const [success, setSuccess] = useState("");
     const [selectedBusinessId, setSelectedBusinessId] = useState<number | null>(null);
     const [businessForm, setBusinessForm] = useState<BusinessForm>(initialBusinessForm);
+    const [domainStatus, setDomainStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
+    useEffect(() => {
+        const slug = businessForm.slug;
+        if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length < 3 || slug.length > 50) {
+            return;
+        }
+        const controller = new AbortController();
+        const timer = window.setTimeout(async () => {
+            setDomainStatus("checking");
+            try {
+                const res = await api.get("/shop-domains/check", { params: { slug }, signal: controller.signal });
+                setDomainStatus(res.data.available ? "available" : "taken");
+            } catch { if (!controller.signal.aborted) setDomainStatus("idle"); }
+        }, 400);
+        return () => { window.clearTimeout(timer); controller.abort(); };
+    }, [businessForm.slug]);
 
     useEffect(() => {
         const storedUser = localStorage.getItem("user") ?? sessionStorage.getItem("user");
@@ -333,6 +355,10 @@ export default function DashboardPage({
         setError("");
         setSuccess("");
 
+        if (domainStatus !== "available") {
+            setError(t("Choose an available shop domain.", "একটি খালি শপ ডোমেইন নির্বাচন করুন।"));
+            return;
+        }
         if (!businessForm.name.trim()) {
             setError(t("Please enter your business name.", "আপনার ব্যবসার নাম লিখুন।"));
             return;
@@ -351,6 +377,8 @@ export default function DashboardPage({
         try {
             await api.post("/businesses", {
                 name: businessForm.name.trim(),
+                admin_password: businessForm.admin_password,
+                slug: businessForm.slug,
                 category_id: Number(businessForm.category_id),
                 country: businessForm.country.trim() || "Bangladesh",
                 currency: "BDT",
@@ -415,7 +443,7 @@ export default function DashboardPage({
             window.location.pathname
         );
 
-        navigate("business-dashboard");
+        window.location.assign(`${window.location.protocol}//admin.${businessSlug}.${import.meta.env.VITE_SAAS_DOMAIN || "localtest.me"}:${window.location.port || "5173"}/login`);
     };
 
 
@@ -426,11 +454,11 @@ export default function DashboardPage({
         } catch {
             // Local credentials are cleared even if the server request fails.
         } finally {
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("user");
+            localStorage.removeItem(TOKEN_KEY);
+            localStorage.removeItem(USER_KEY);
             localStorage.removeItem("selected_business_id");
-            sessionStorage.removeItem("access_token");
-            sessionStorage.removeItem("user");
+            sessionStorage.removeItem(TOKEN_KEY);
+            sessionStorage.removeItem(USER_KEY);
             setLoggingOut(false);
             navigate("login");
         }
@@ -984,6 +1012,29 @@ export default function DashboardPage({
                                             />
                                         </FormField>
 
+                                        <div className="sm:col-span-2">
+                                            <FormField label={t("Choose Shop Domain", "শপ ডোমেইন নির্বাচন করুন")} required>
+                                                <div className="flex items-center rounded-xl border border-slate-200 bg-white focus-within:border-blue-500">
+                                                    <input type="text" value={businessForm.slug} maxLength={50} required minLength={3}
+                                                        pattern="[a-z0-9]+(-[a-z0-9]+)*" className="min-w-0 flex-1 px-3.5 py-3 text-sm outline-none"
+                                                        placeholder="shawonstore" onChange={e => { updateBusinessForm("slug", e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "")); setDomainStatus("idle"); }} />
+                                                    <span className="pr-3 text-xs text-slate-500">.localtest.me</span>
+                                                </div>
+                                            </FormField>
+                                            <p aria-live="polite" className={`mt-1.5 text-xs ${domainStatus === "available" ? "text-emerald-700" : domainStatus === "taken" ? "text-red-600" : "text-slate-500"}`}>
+                                                {domainStatus === "available" ? t("Domain available", "ডোমেইন খালি আছে") : domainStatus === "taken" ? t("Domain unavailable", "ডোমেইনটি পাওয়া যাচ্ছে না") : domainStatus === "checking" ? t("Checking domain...", "ডোমেইন যাচাই হচ্ছে...") : t("Choose a unique shop address", "একটি ইউনিক শপ ঠিকানা নির্বাচন করুন")}
+                                            </p>
+                                            <p className="mt-1 text-xs text-slate-500">{businessForm.slug || "yourshop"}.localtest.me · admin.{businessForm.slug || "yourshop"}.localtest.me</p>
+                                        </div>
+
+                                        <FormField label={t("Shop Admin Password", "শপ অ্যাডমিন পাসওয়ার্ড")} required>
+                                            <input type="password" autoComplete="new-password" minLength={8}
+                                                value={businessForm.admin_password}
+                                                onChange={(event) => updateBusinessForm("admin_password", event.target.value)}
+                                                placeholder={t("Separate from your SaaS password", "SaaS পাসওয়ার্ড থেকে আলাদা")}
+                                                className={inputClass} required />
+                                        </FormField>
+
                                         <FormField label={t("Business Category", "ব্যবসার ক্যাটাগরি")} required>
                                             <select
                                                 value={businessForm.category_id}
@@ -999,7 +1050,7 @@ export default function DashboardPage({
                                                 </option>
                                                 {categories.map((category) => (
                                                     <option key={category.id} value={String(category.id)}>
-                                                        {category.name}
+                                                        {language === "bn" ? category.name_bn || category.name : category.name}
                                                     </option>
                                                 ))}
                                             </select>

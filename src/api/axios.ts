@@ -2,8 +2,8 @@ import axios from "axios";
 
 const hostname = window.location.hostname.toLowerCase();
 
-const BASE_DOMAIN = "saas.com";
-const LOCAL_DOMAIN = "localtest.me";
+const BASE_DOMAIN = import.meta.env.VITE_SAAS_DOMAIN || "saas.com";
+const LOCAL_DOMAIN = import.meta.env.VITE_SAAS_LOCAL_DOMAIN || "localtest.me";
 
 type AppMode = "main" | "business_admin" | "storefront";
 
@@ -65,7 +65,7 @@ export const USER_KEY =
           : `user_customer_${tenantSlug}`;
 
 const api = axios.create({
-    baseURL: "http://127.0.0.1:8001/api",
+    baseURL: import.meta.env.VITE_API_URL || "http://127.0.0.1:8001/api",
 });
 
 api.interceptors.request.use((config) => {
