@@ -32,7 +32,7 @@ function errorText(error: unknown): string {
 }
 
 export default function BusinessTeamPage({ businessId, language, onBack }: Props) {
-    const t = (en: string, bn: string) => language === "bn" ? bn : en;
+    const t = (en: string, bn: string) => language === "bn" ? (bn || en) : en;
     const [team, setTeam] = useState<TeamData | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);

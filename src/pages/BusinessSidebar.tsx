@@ -58,7 +58,7 @@ const clean = (path: string) => path.replace(/\/+$/, "") || "/";
 export default function BusinessSidebar(p: Props) {
     const navigate = useNavigate();
     const location = useLocation();
-    const t = (en: string, bn: string) => p.language === "bn" ? bn : en;
+    const t = (en: string, bn: string) => p.language === "bn" ? (bn || en) : en;
 
     const [search, setSearch] = useState("");
     const [error, setError] = useState("");

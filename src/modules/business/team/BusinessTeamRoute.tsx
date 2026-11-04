@@ -11,7 +11,7 @@ export default function BusinessTeamRoute({ language }: Props) {
     const navigate = useNavigate();
     const { businessId } = useParams<{ businessId: string }>();
     const id = Number(businessId);
-    const t = (en: string, bn: string) => language === "bn" ? bn : en;
+    const t = (en: string, bn: string) => language === "bn" ? (bn || en) : en;
 
     if (!Number.isSafeInteger(id) || id <= 0) {
         return (

@@ -245,6 +245,7 @@ export default function ShopAdminLoginForm({
                                 <ArrowRight size={17} />
                             </Button>
                         </form>
+                        <p className="mt-5 text-center text-sm text-slate-500">{language === "bn" ? "আমন্ত্রণ পেয়েছেন?" : "Have an invitation?"} <button type="button" onClick={() => navigate("register")} className="font-semibold text-blue-700 hover:underline">{language === "bn" ? "অ্যাডমিন নিবন্ধন" : "Register as admin"}</button></p>
 
                         <div className="mt-8 flex items-center justify-center gap-2 text-xs text-slate-400">
                             <ShieldCheck size={15} />

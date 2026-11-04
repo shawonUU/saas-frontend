@@ -54,7 +54,7 @@ const getErrorMessage = (error: unknown, fallback: string): string => {
 export default function BusinessDashboardPage({
     businessId, language, onLanguageChange, onBack, onLogout
 }: Props) {
-    const t = (en: string, bn: string) => language === "bn" ? bn : en;
+    const t = (en: string, bn: string) => language === "bn" ? (bn || en) : en;
 
     const [dashboard, setDashboard] = useState<BusinessDashboardData | null>(null);
     const [loading, setLoading] = useState(true);

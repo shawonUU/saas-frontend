@@ -23,7 +23,7 @@ export default function BusinessTopbar({
     title, breadcrumb, icon, businessName, language,
     onLanguageChange, onOpenSidebar, onRefresh, refreshing
 }: Props) {
-    const t = (en: string, bn: string) => language === "bn" ? bn : en;
+    const t = (en: string, bn: string) => language === "bn" ? (bn || en) : en;
     const ActiveIcon = getIcon(icon);
 
     return (

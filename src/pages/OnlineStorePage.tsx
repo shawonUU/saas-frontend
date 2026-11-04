@@ -13,6 +13,7 @@ import {
     CheckCircle2,
 } from "lucide-react";
 import api from "../api/axios";
+import { useLanguage } from "../locales/LanguageContext";
 
 type OnlineStore = {
     id: number;
@@ -70,6 +71,8 @@ function getStore(responseData: any): OnlineStore {
 }
 
 export default function OnlineStorePage() {
+    const { language } = useLanguage();
+    const t = (en: string, bn: string) => language === "bn" ? (bn || en) : en;
     const [businessId, setBusinessId] = useState<number | null>(null);
     const [stores, setStores] = useState<OnlineStore[]>([]);
     const [loading, setLoading] = useState(true);
@@ -87,7 +90,7 @@ export default function OnlineStorePage() {
         if (Number.isInteger(storedId) && storedId > 0) {
             setBusinessId(storedId);
         } else {
-            setError("No business selected. Please select a business first.");
+            setError(t('No business selected. Please select a business first.', 'কোনো ব্যবসা নির্বাচিত নেই। আগে একটি ব্যবসা নির্বাচন করুন।'));
             setLoading(false);
         }
     }, []);
@@ -192,13 +195,13 @@ export default function OnlineStorePage() {
                     `/online-stores/${editingStore.id}`,
                     payload,
                 );
-                setSuccess("Online store updated successfully.");
+                setSuccess(t('Online store updated successfully.', 'অনলাইন স্টোর সফলভাবে আপডেট হয়েছে।'));
             } else {
                 await api.post(
                     `/businesses/${businessId}/online-stores`,
                     payload,
                 );
-                setSuccess("Online store created successfully.");
+                setSuccess(t('Online store created successfully.', 'অনলাইন স্টোর সফলভাবে তৈরি হয়েছে।'));
             }
 
             setShowForm(false);
@@ -248,16 +251,13 @@ export default function OnlineStorePage() {
                 <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                     <div>
                         <div className="mb-2 flex items-center gap-2 text-sm font-medium text-blue-700">
-                            <Store size={18} />
-                            E-commerce
+                            <Store size={18} />{t("E-commerce", "ই-কমার্স")}
                         </div>
 
-                        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-                            Online Stores
+                        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{t("Online Stores", "অনলাইন স্টোরসমূহ")}
                         </h1>
 
-                        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-                            Create and manage your online storefronts from one place.
+                        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">{t("Create and manage your online storefronts from one place.", "এক জায়গা থেকে আপনার অনলাইন স্টোর তৈরি ও পরিচালনা করুন।")}
                         </p>
                     </div>
 
@@ -271,8 +271,7 @@ export default function OnlineStorePage() {
                             <RefreshCw
                                 size={17}
                                 className={loading ? "animate-spin" : ""}
-                            />
-                            Refresh
+                            />{t("Refresh", "রিফ্রেশ")}
                         </button>
 
                         <button
@@ -281,15 +280,13 @@ export default function OnlineStorePage() {
                             disabled={!businessId}
                             className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-60"
                         >
-                            <Plus size={18} />
-                            Create Online Store
+                            <Plus size={18} />{t("Create Online Store", "অনলাইন স্টোর তৈরি করুন")}
                         </button>
                     </div>
                 </div>
 
                 {!businessId && (
-                    <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
-                        Select a business from the business dashboard before creating an online store.
+                    <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">{t("Select a business from the business dashboard before creating an online store.", "অনলাইন স্টোর তৈরির আগে ড্যাশবোর্ড থেকে একটি ব্যবসা নির্বাচন করুন।")}
                     </div>
                 )}
 
@@ -303,7 +300,7 @@ export default function OnlineStorePage() {
                         <button
                             type="button"
                             onClick={() => setError("")}
-                            aria-label="Dismiss error"
+                            aria-label={t('Dismiss error', 'ত্রুটি বন্ধ করুন')}
                         >
                             <X size={17} />
                         </button>
@@ -320,7 +317,7 @@ export default function OnlineStorePage() {
                         <button
                             type="button"
                             onClick={() => setSuccess("")}
-                            aria-label="Dismiss message"
+                            aria-label={t('Dismiss message', 'বার্তা বন্ধ করুন')}
                         >
                             <X size={17} />
                         </button>
@@ -329,12 +326,12 @@ export default function OnlineStorePage() {
 
                 <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <SummaryCard
-                        title="Total Stores"
+                        title={t('Total Stores', 'মোট স্টোর')}
                         value={loading ? "—" : stores.length}
-                        description="All stores in this business"
+                        description={t('All stores in this business', 'এই ব্যবসার সব স্টোর')}
                     />
                     <SummaryCard
-                        title="Published"
+                        title={t('Published', 'প্রকাশিত')}
                         value={
                             loading
                                 ? "—"
@@ -342,10 +339,10 @@ export default function OnlineStorePage() {
                                       (store) => store.status === "published",
                                   ).length
                         }
-                        description="Stores marked as published"
+                        description={t('Stores marked as published', 'প্রকাশিত স্টোরসমূহ')}
                     />
                     <SummaryCard
-                        title="Drafts"
+                        title={t('Drafts', 'খসড়া')}
                         value={
                             loading
                                 ? "—"
@@ -353,17 +350,15 @@ export default function OnlineStorePage() {
                                       (store) => store.status === "draft",
                                   ).length
                         }
-                        description="Stores waiting to be published"
+                        description={t('Stores waiting to be published', 'প্রকাশের অপেক্ষায় থাকা স্টোর')}
                     />
                 </div>
 
                 <section>
                     <div className="mb-4">
-                        <h2 className="text-lg font-bold text-slate-900">
-                            Your Stores
+                        <h2 className="text-lg font-bold text-slate-900">{t("Your Stores", "আপনার স্টোরসমূহ")}
                         </h2>
-                        <p className="mt-1 text-sm text-slate-500">
-                            Manage your store details, domain and publication status.
+                        <p className="mt-1 text-sm text-slate-500">{t("Manage your store details, domain and publication status.", "স্টোরের বিবরণ, ডোমেইন ও প্রকাশের অবস্থা পরিচালনা করুন।")}
                         </p>
                     </div>
 
@@ -387,12 +382,10 @@ export default function OnlineStorePage() {
                                 <Store size={30} />
                             </div>
 
-                            <h3 className="text-lg font-bold text-slate-900">
-                                Create your first online store
+                            <h3 className="text-lg font-bold text-slate-900">{t("Create your first online store", "প্রথম অনলাইন স্টোর তৈরি করুন")}
                             </h3>
 
-                            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
-                                Set up a storefront for your business and give your customers a dedicated online shopping address.
+                            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">{t("Set up a storefront for your business and give your customers a dedicated online shopping address.", "আপনার ব্যবসার স্টোরফ্রন্ট তৈরি করে গ্রাহকদের জন্য আলাদা কেনাকাটার ঠিকানা দিন।")}
                             </p>
 
                             <button
@@ -401,8 +394,7 @@ export default function OnlineStorePage() {
                                 disabled={!businessId}
                                 className="mt-6 inline-flex items-center gap-2 rounded-xl bg-blue-700 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-60"
                             >
-                                <Plus size={18} />
-                                Create Online Store
+                                <Plus size={18} />{t("Create Online Store", "অনলাইন স্টোর তৈরি করুন")}
                             </button>
                         </div>
                     ) : (
@@ -446,8 +438,7 @@ export default function OnlineStorePage() {
 
                                         <div className="space-y-4 p-5">
                                             <div>
-                                                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                                                    Store address
+                                                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">{t("Store address", "স্টোরের ঠিকানা")}
                                                 </p>
 
                                                 <a
@@ -466,11 +457,10 @@ export default function OnlineStorePage() {
                                             </div>
 
                                             <div>
-                                                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                                                    Description
+                                                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">{t("Description", "বিবরণ")}
                                                 </p>
                                                 <p className="line-clamp-2 min-h-10 text-sm leading-5 text-slate-600">
-                                                    {store.description || "No description added."}
+                                                    {store.description || t('No description added.', 'কোনো বিবরণ যোগ করা হয়নি।')}
                                                 </p>
                                             </div>
 
@@ -480,8 +470,7 @@ export default function OnlineStorePage() {
                                                     onClick={() => openEditForm(store)}
                                                     className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
                                                 >
-                                                    <Pencil size={16} />
-                                                    Edit Store
+                                                    <Pencil size={16} />{t("Edit Store", "স্টোর সম্পাদনা")}
                                                 </button>
 
                                                 {!published && (
@@ -528,10 +517,9 @@ export default function OnlineStorePage() {
                                     id="online-store-form-title"
                                     className="text-lg font-bold text-slate-900"
                                 >
-                                    {editingStore ? "Edit Online Store" : "Create Online Store"}
+                                    {editingStore ? t('Edit Online Store', 'অনলাইন স্টোর সম্পাদনা') : t('Create Online Store', 'অনলাইন স্টোর তৈরি করুন')}
                                 </h2>
-                                <p className="mt-1 text-sm text-slate-500">
-                                    Configure your storefront name and address.
+                                <p className="mt-1 text-sm text-slate-500">{t("Configure your storefront name and address.", "স্টোরের নাম ও ঠিকানা নির্ধারণ করুন।")}
                                 </p>
                             </div>
 
@@ -540,7 +528,7 @@ export default function OnlineStorePage() {
                                 onClick={closeForm}
                                 disabled={saving}
                                 className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
-                                aria-label="Close form"
+                                aria-label={t('Close form', 'ফর্ম বন্ধ করুন')}
                             >
                                 <X size={19} />
                             </button>
@@ -552,8 +540,7 @@ export default function OnlineStorePage() {
                                     <label
                                         htmlFor="store-name"
                                         className="mb-2 block text-sm font-medium text-slate-700"
-                                    >
-                                        Store Name <span className="text-red-500">*</span>
+                                    >{t("Store Name", "স্টোরের নাম")} <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="store-name"
@@ -573,8 +560,7 @@ export default function OnlineStorePage() {
                                     <label
                                         htmlFor="store-slug"
                                         className="mb-2 block text-sm font-medium text-slate-700"
-                                    >
-                                        Store Address <span className="text-red-500">*</span>
+                                    >{t("Store Address", "স্টোরের ঠিকানা")} <span className="text-red-500">*</span>
                                     </label>
 
                                     <div className="flex min-w-0 items-stretch">
@@ -606,8 +592,7 @@ export default function OnlineStorePage() {
                                     </p>
 
                                     {editingStore && editingStore.status === "published" && (
-                                        <p className="mt-2 text-xs leading-5 text-amber-700">
-                                            A published store's address cannot be changed.
+                                        <p className="mt-2 text-xs leading-5 text-amber-700">{t('A published store\'s address cannot be changed.', "প্রকাশিত স্টোরের ঠিকানা পরিবর্তন করা যাবে না।")}
                                         </p>
                                     )}
                                 </div>
@@ -616,8 +601,7 @@ export default function OnlineStorePage() {
                                     <label
                                         htmlFor="store-description"
                                         className="mb-2 block text-sm font-medium text-slate-700"
-                                    >
-                                        Description
+                                    >{t("Description", "বিবরণ")}
                                     </label>
                                     <textarea
                                         id="store-description"
@@ -626,7 +610,7 @@ export default function OnlineStorePage() {
                                             updateForm("description", event.target.value)
                                         }
                                         className={`${inputClass} min-h-24 resize-y`}
-                                        placeholder="Tell customers about your store."
+                                        placeholder={t('Tell customers about your store.', 'গ্রাহকদের আপনার স্টোর সম্পর্কে জানান।')}
                                         rows={4}
                                     />
                                 </div>
@@ -638,8 +622,7 @@ export default function OnlineStorePage() {
                                     onClick={closeForm}
                                     disabled={saving}
                                     className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60"
-                                >
-                                    Cancel
+                                >{t("Cancel", "বাতিল")}
                                 </button>
 
                                 <button
@@ -649,10 +632,10 @@ export default function OnlineStorePage() {
                                 >
                                     {saving && <RefreshCw size={16} className="animate-spin" />}
                                     {saving
-                                        ? "Saving..."
+                                        ? t('Saving...', 'সংরক্ষণ হচ্ছে...')
                                         : editingStore
-                                          ? "Save Changes"
-                                          : "Create Store"}
+                                          ? t('Save Changes', 'পরিবর্তন সংরক্ষণ করুন')
+                                          : t('Create Store', 'স্টোর তৈরি করুন')}
                                 </button>
                             </div>
                         </form>

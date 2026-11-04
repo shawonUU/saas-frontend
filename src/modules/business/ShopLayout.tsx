@@ -1,5 +1,6 @@
 
 import { useState, type ReactNode } from "react";
+import { useLanguage } from "../../locales/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import BusinessSidebar from "../../pages/BusinessSidebar";
 import BusinessTopbar from "../../pages/BusinessTopbar";
@@ -48,15 +49,9 @@ export default function ShopLayout({
     });
 
     const t = (en: string, bn: string) =>
-        language === "bn" ? bn : en;
+        language === "bn" ? (bn || en) : en;
 
-    const changeLanguage = (next: Language) => {
-        if (next === language) return;
-        localStorage.setItem("nexabiz-language", next);
-        // The current AppRoutes owns language state.
-        // Reload so it reads the updated persisted language.
-        window.location.reload();
-    };
+    const { changeLanguage } = useLanguage();
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-800">

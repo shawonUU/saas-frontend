@@ -1,5 +1,6 @@
 
-import { useState } from "react";
+import LanguageSwitcher from "../components/LanguageSwitcher";
+import { useLanguage } from "../locales/LanguageContext";
 import {
     Navigate,
     Route,
@@ -16,6 +17,8 @@ import LoginPage from "../pages/LoginPage";
 import ShopAdminLoginPage from "../pages/ShopAdminLoginPage";
 import CustomerLoginPage from "../pages/CustomerLoginPage";
 import RegisterPage from "../pages/RegisterPage";
+import CustomerRegisterPage from "../pages/CustomerRegisterPage";
+import ShopAdminRegisterPage from "../pages/ShopAdminRegisterPage";
 import DashboardPage from "../pages/DashboardPage";
 import BusinessDashboardPage from "../pages/BusinessDashboardPage";
 import OnlineStorePage from "../pages/OnlineStorePage";
@@ -85,22 +88,7 @@ function BusinessDashboardRoute({
 export default function AppRoutes() {
     const navigate = useNavigate();
 
-    const [language, setLanguage] = useState<Language>(() =>
-        localStorage.getItem("nexabiz-language") === "bn"
-            ? "bn"
-            : "en"
-    );
-
-
-    const changeLanguage = (nextLanguage: Language) => {
-        setLanguage(nextLanguage);
-
-        localStorage.setItem(
-            "nexabiz-language",
-            nextLanguage
-        );
-    };
-
+    const { language, changeLanguage } = useLanguage();
 
     const goToPage = (page: Page) => {
         const selectedBusinessSlug =
@@ -158,8 +146,8 @@ export default function AppRoutes() {
                     path="/register"
                     element={
                         appMode === "storefront"
-                            ? <RegisterPage {...pageProps} />
-                            : <Navigate to="/login" replace />
+                            ? <CustomerRegisterPage {...pageProps} />
+                            : <ShopAdminRegisterPage {...pageProps} />
                     }
                 />
 
@@ -169,7 +157,7 @@ export default function AppRoutes() {
                     path="/"
                     element={
                         appMode === "storefront"
-                            ? <StorefrontHome language={language} />
+                            ? <><StorefrontHome language={language} /><FloatingLanguageSwitch language={language} onChange={changeLanguage} /></>
                             : <Navigate to="/dashboard" replace />
                     }
                 />
@@ -181,17 +169,9 @@ export default function AppRoutes() {
                     element={
                         <ProtectedRoute>
                             {appMode === "business_admin" ? (
-                                <ShopAdminHome
-                                    language={language}
-                                />
+                                <><ShopAdminHome language={language} /><FloatingLanguageSwitch language={language} onChange={changeLanguage} /></>
                             ) : (
-                                <div className="min-h-screen bg-slate-50 p-8">
-                                    <h1 className="text-xl font-bold">
-                                        {language === "bn"
-                                            ? "আমার অ্যাকাউন্ট"
-                                            : "My Account"}
-                                    </h1>
-                                </div>
+                                <div className="min-h-screen bg-slate-50 p-8"><h1 className="text-xl font-bold">{language === "bn" ? "আমার অ্যাকাউন্ট" : "My Account"}</h1><FloatingLanguageSwitch language={language} onChange={changeLanguage} /></div>
                             )}
                         </ProtectedRoute>
                     }
@@ -285,7 +265,7 @@ export default function AppRoutes() {
                 path="/online-stores"
                 element={
                     <ProtectedRoute>
-                        <OnlineStorePage />
+                        <><OnlineStorePage /><FloatingLanguageSwitch language={language} onChange={changeLanguage} /></>
                     </ProtectedRoute>
                 }
             />
@@ -320,4 +300,8 @@ function LegacyBusinessDashboardRedirect() {
             replace
         />
     );
+}
+
+function FloatingLanguageSwitch({ language, onChange }: { language: Language; onChange: (next: Language) => void }) {
+    return <div className="fixed bottom-20 right-4 z-[90] rounded-xl border border-slate-200 bg-white p-1 shadow-lg sm:bottom-5" role="group" aria-label="Language settings"><LanguageSwitcher language={language} onChange={onChange} /></div>;
 }

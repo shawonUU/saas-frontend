@@ -100,7 +100,7 @@ export default function BusinessModuleRoute({ language }: Props) {
     }>();
 
     const t = (en: string, bn: string) =>
-        language === "bn" ? bn : en;
+        language === "bn" ? (bn || en) : en;
 
     const businessId = getSelectedBusinessId();
 
