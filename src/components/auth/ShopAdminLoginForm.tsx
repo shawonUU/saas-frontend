@@ -70,6 +70,18 @@ export default function ShopAdminLoginForm({
                 throw new Error("Login response did not include an API token.");
             }
 
+            // Do not create a shop-admin session for a customer or a SaaS-only account.
+            // This protected endpoint must check tenant membership and admin privileges server-side.
+            try {
+                await api.get("/shop-admin/dashboard", {
+                    headers: { Authorization: `Bearer ${data.token}` },
+                });
+            } catch {
+                throw new Error(language === "bn"
+                    ? "এই শপের অ্যাডমিন অনুমতি নেই অথবা অ্যাকাউন্টটি সঠিক নয়।"
+                    : "This account does not have access to this shop's admin dashboard.");
+            }
+
             localStorage.removeItem(TOKEN_KEY);
             localStorage.removeItem(USER_KEY);
             sessionStorage.removeItem(TOKEN_KEY);

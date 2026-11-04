@@ -1,5 +1,6 @@
 
 import LanguageSwitcher from "../components/LanguageSwitcher";
+import ShopAdminGuard from "../components/auth/ShopAdminGuard";
 import { useLanguage } from "../locales/LanguageContext";
 import {
     Navigate,
@@ -157,7 +158,7 @@ export default function AppRoutes() {
                     path="/"
                     element={
                         appMode === "storefront"
-                            ? <><StorefrontHome language={language} /><FloatingLanguageSwitch language={language} onChange={changeLanguage} /></>
+                            ? <StorefrontHome language={language} />
                             : <Navigate to="/dashboard" replace />
                     }
                 />
@@ -169,9 +170,9 @@ export default function AppRoutes() {
                     element={
                         <ProtectedRoute>
                             {appMode === "business_admin" ? (
-                                <><ShopAdminHome language={language} /><FloatingLanguageSwitch language={language} onChange={changeLanguage} /></>
+                                <ShopAdminGuard><ShopAdminHome language={language} /></ShopAdminGuard>
                             ) : (
-                                <div className="min-h-screen bg-slate-50 p-8"><h1 className="text-xl font-bold">{language === "bn" ? "আমার অ্যাকাউন্ট" : "My Account"}</h1><FloatingLanguageSwitch language={language} onChange={changeLanguage} /></div>
+                                <div className="min-h-screen bg-slate-50"><header className="sticky top-0 z-40 flex items-center justify-between border-b bg-white px-5 py-4"><h1 className="text-xl font-bold">{language === "bn" ? "আমার অ্যাকাউন্ট" : "My Account"}</h1><LanguageSwitcher language={language} onChange={changeLanguage}/></header></div>
                             )}
                         </ProtectedRoute>
                     }
@@ -265,7 +266,7 @@ export default function AppRoutes() {
                 path="/online-stores"
                 element={
                     <ProtectedRoute>
-                        <><OnlineStorePage /><FloatingLanguageSwitch language={language} onChange={changeLanguage} /></>
+                        <><div className="sticky top-0 z-50 flex items-center justify-end border-b border-slate-200 bg-white px-4 py-2"><LanguageSwitcher language={language} onChange={changeLanguage} /></div><OnlineStorePage /></>
                     </ProtectedRoute>
                 }
             />
