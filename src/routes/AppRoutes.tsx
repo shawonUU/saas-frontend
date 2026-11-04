@@ -12,7 +12,6 @@ import type { ReactNode } from "react";
 import { TOKEN_KEY, appMode } from "../api/axios";
 import type { Language, Page } from "../types";
 
-import LandingPage from "../pages/LandingPage";
 import LoginPage from "../pages/LoginPage";
 import ShopAdminLoginPage from "../pages/ShopAdminLoginPage";
 import CustomerLoginPage from "../pages/CustomerLoginPage";
@@ -29,6 +28,7 @@ import {
     businessDashboardPath,
     validBusinessSlug
 } from "../modules/business/businessRoutes";
+import LandingPage from "../pages/LandingPage";
 
 
 function hasAuthToken(): boolean {
