@@ -10,7 +10,7 @@ type Catalog = { business: { name: string; slug: string }; categories: Category[
 const money = (value: number | string) => `৳${Number(value || 0).toLocaleString("en-BD", { maximumFractionDigits: 2 })}`;
 const imageFallback = (label: string) => <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-br from-rose-50 via-white to-slate-100 text-rose-200"><ShoppingBag size={42} strokeWidth={1.3} /><span className="max-w-[85%] truncate text-[10px] font-medium text-slate-400">{label}</span></div>;
 
-export default function StorefrontHome({ language }: { language: Language }) {
+export default function StorefrontHome({ language }: { language: Language }) { 
   const t = (en: string, bn: string) => language === "bn" ? (bn || en) : en;
   const local = (v: { name: string; name_bn?: string | null }) => language === "bn" ? (v.name_bn?.trim() || v.name) : v.name;
   const [catalog, setCatalog] = useState<Catalog | null>(null);
