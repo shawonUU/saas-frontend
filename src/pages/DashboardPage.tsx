@@ -1,3 +1,4 @@
+import { tenantUrl } from "../api/domain";
 import { TOKEN_KEY, USER_KEY } from "../api/axios";
 import {
     useCallback,
@@ -443,7 +444,7 @@ export default function DashboardPage({
             window.location.pathname
         );
 
-        window.location.assign(`${window.location.protocol}//admin.${businessSlug}.${import.meta.env.VITE_SAAS_DOMAIN || "localtest.me"}:${window.location.port || "5173"}`);
+        window.location.assign(tenantUrl(businessSlug, true));
     };
 
 

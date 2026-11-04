@@ -1,49 +1,6 @@
 import axios from "axios";
 
-const hostname = window.location.hostname.toLowerCase();
-
-const BASE_DOMAIN = import.meta.env.VITE_SAAS_DOMAIN || "saas.com";
-const LOCAL_DOMAIN = import.meta.env.VITE_SAAS_LOCAL_DOMAIN || "localtest.me";
-
-type AppMode = "main" | "business_admin" | "storefront";
-
-function getTenantContext() {
-    let subdomain = "";
-
-    if (hostname.endsWith(`.${LOCAL_DOMAIN}`)) {
-        subdomain = hostname.slice(0, -(LOCAL_DOMAIN.length + 1));
-    } else if (hostname.endsWith(`.${BASE_DOMAIN}`)) {
-        subdomain = hostname.slice(0, -(BASE_DOMAIN.length + 1));
-    }
-
-    if (!subdomain || hostname === "localhost" || hostname === "127.0.0.1") {
-        return {
-            tenantSlug: "main",
-            appMode: "main" as AppMode,
-        };
-    }
-
-    const parts = subdomain.split(".");
-
-    if (parts.length === 2 && parts[0] === "admin") {
-        return {
-            tenantSlug: parts[1],
-            appMode: "business_admin" as AppMode,
-        };
-    }
-
-    if (parts.length === 1) {
-        return {
-            tenantSlug: parts[0],
-            appMode: "storefront" as AppMode,
-        };
-    }
-
-    return {
-        tenantSlug: "main",
-        appMode: "main" as AppMode,
-    };
-}
+import { getTenantContext } from "./domain";
 
 const context = getTenantContext();
 

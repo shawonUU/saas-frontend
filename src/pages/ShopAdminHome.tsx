@@ -1,3 +1,4 @@
+import { tenantUrl } from "../api/domain";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import { useLanguage } from "../locales/LanguageContext";
 import { useEffect, useMemo, useState } from "react";
@@ -26,7 +27,7 @@ export default function ShopAdminHome({language}:{language:Language}) {
  const submitProduct=async(e:React.FormEvent)=>{e.preventDefault();setSaving(true);setError("");try{await api.post("/retail/admin/products",{...form,category_id:form.category_id?Number(form.category_id):null,price:Number(form.price),stock:Number(form.stock),variants:variants.map(v=>({...v,price:Number(v.price),stock:Number(v.stock),color_hex:v.color_hex||null}))});setForm({name:"",name_bn:"",sku:"",description:"",image_url:"",category_id:"",price:"",stock:"0"});setVariants([]);await refresh();setNotice(t("Product published.","পণ্য প্রকাশিত হয়েছে।"));}catch(e:any){setError(e?.response?.data?.message||"Unable to save product.");}finally{setSaving(false);}};
  const removeProduct=async(id:number)=>{if(!window.confirm(t("Delete this product?","এই পণ্যটি মুছে ফেলবেন?")))return;try{await api.delete(`/retail/admin/products/${id}`);await refresh();}catch{setError(t("Could not delete product.","পণ্যটি মুছে ফেলা যায়নি।"));}};
  const logout=async()=>{try{await api.post("/auth/logout");}catch{/* local token always cleared */}localStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(TOKEN_KEY);localStorage.removeItem(USER_KEY);window.location.assign("/login");};
- const domain=`${window.location.protocol}//${tenantSlug}.${import.meta.env.VITE_SAAS_LOCAL_DOMAIN||"localtest.me"}${window.location.port?":"+window.location.port:""}`;
+ const domain=tenantUrl(tenantSlug);
  const visible=useMemo(()=>products.filter(p=>(p.name+" "+(p.sku||"")).toLowerCase().includes(search.toLowerCase())),[products,search]);
  const navigate=(route?:string)=>{if(!route)return;const target=route.includes("product")?"products":route.includes("categor")?"categories":"overview";setTab(target);setDrawer(false);};
  const Field=({label,value,onChange,type="text",placeholder=""}:{label:string;value:string;onChange:(v:string)=>void;type?:string;placeholder?:string})=><label className="block text-sm font-medium text-slate-700">{label}<input required={label.includes("*")} value={value} onChange={e=>onChange(e.target.value)} type={type} placeholder={placeholder} className="mt-2 block w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100" /></label>;
